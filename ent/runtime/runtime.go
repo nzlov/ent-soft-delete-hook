@@ -3,6 +3,8 @@
 package runtime
 
 import (
+	"entgo.io/bug/ent/group"
+	"entgo.io/bug/ent/pet"
 	"entgo.io/bug/ent/schema"
 	"entgo.io/bug/ent/todo"
 	"entgo.io/bug/ent/user"
@@ -12,6 +14,16 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	groupMixin := schema.Group{}.Mixin()
+	groupMixinHooks0 := groupMixin[0].Hooks()
+	group.Hooks[0] = groupMixinHooks0[0]
+	groupMixinInters0 := groupMixin[0].Interceptors()
+	group.Interceptors[0] = groupMixinInters0[0]
+	petMixin := schema.Pet{}.Mixin()
+	petMixinHooks0 := petMixin[0].Hooks()
+	pet.Hooks[0] = petMixinHooks0[0]
+	petMixinInters0 := petMixin[0].Interceptors()
+	pet.Interceptors[0] = petMixinInters0[0]
 	todoMixin := schema.Todo{}.Mixin()
 	todoMixinHooks0 := todoMixin[0].Hooks()
 	todo.Hooks[0] = todoMixinHooks0[0]
@@ -25,6 +37,5 @@ func init() {
 }
 
 const (
-	Version = "v0.11.5-0.20221208130852-6c5ffd8ea89e"           // Version of ent codegen.
-	Sum     = "h1:ZpE8dOo/IT85/41p4NcSXmZUSdrn6YV/krj47j0rEoA=" // Sum of ent codegen.
+	Version = "v0.11.5-0.20221208130852-6c5ffd8ea89e" // Version of ent codegen.
 )

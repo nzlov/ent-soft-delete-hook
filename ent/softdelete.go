@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/bug/ent/group"
+	"entgo.io/bug/ent/pet"
 	"entgo.io/bug/ent/todo"
 	"entgo.io/bug/ent/user"
 	"entgo.io/ent"
@@ -14,7 +16,11 @@ import (
 
 func Filter(q Query) any {
 	switch v := q.(type) {
+	case *GroupQuery:
+		return v.Filter()
 	case *OtherQuery:
+		return v.Filter()
+	case *PetQuery:
 		return v.Filter()
 	case *TodoQuery:
 		return v.Filter()
@@ -34,6 +40,14 @@ func MarkAsDeleted(ctx context.Context, m ent.Mutation, t time.Time) (ent.Value,
 			return nil, err
 		}
 		switch m.Type() {
+		case "Group":
+			if err := p.Client().Group.Update().Where(group.IDIn(ids...)).SetDeletedTime(t).Exec(ctx); err != nil {
+				return nil, err
+			}
+		case "Pet":
+			if err := p.Client().Pet.Update().Where(pet.IDIn(ids...)).SetDeletedTime(t).Exec(ctx); err != nil {
+				return nil, err
+			}
 		case "Todo":
 			if err := p.Client().Todo.Update().Where(todo.IDIn(ids...)).SetDeletedTime(t).Exec(ctx); err != nil {
 				return nil, err

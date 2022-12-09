@@ -2,6 +2,7 @@ package schema
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	gen "entgo.io/bug/ent"
@@ -48,13 +49,18 @@ func SkipSoftDelete(parent context.Context) context.Context {
 func (SoftDeleteMixin) Interceptors() []ent.Interceptor {
 	return []ent.Interceptor{
 		ent.TraverseFunc(func(ctx context.Context, q ent.Query) error {
+			fmt.Println("Interceptor:")
 			if skip, _ := ctx.Value(softDeleteKey{}).(bool); skip {
+				fmt.Println("Interceptor:Skip")
 				return nil
 			}
 			if f, ok := gen.Filter(q).(interface {
 				WhereDeletedTime(p entql.TimeP)
 			}); ok {
 				f.WhereDeletedTime(entql.TimeNil())
+				fmt.Println("Interceptor:delete")
+			} else {
+				fmt.Println("Interceptor:no delete")
 			}
 			return nil
 		}),
@@ -65,6 +71,7 @@ func (SoftDeleteMixin) Hooks() []ent.Hook {
 	return []ent.Hook{
 		hook.On(
 			func(next ent.Mutator) ent.Mutator {
+				fmt.Println("OnHook:")
 				return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
 					if skip, _ := ctx.Value(softDeleteKey{}).(bool); skip {
 						return next.Mutate(ctx, m)

@@ -6,8 +6,14 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// Group is the predicate function for group builders.
+type Group func(*sql.Selector)
+
 // Other is the predicate function for other builders.
 type Other func(*sql.Selector)
+
+// Pet is the predicate function for pet builders.
+type Pet func(*sql.Selector)
 
 // Todo is the predicate function for todo builders.
 type Todo func(*sql.Selector)
