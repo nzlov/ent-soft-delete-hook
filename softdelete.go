@@ -74,6 +74,14 @@ func main() {
 			}
 		}
 
+		n, err := client.User.Update().Where(user.Name("u1")).SetName("nu1").Save(ctx)
+		if err != nil {
+			panic(err)
+		}
+		if n > 0 {
+			panic("set name to soft delete user")
+		}
+
 	}
 	{
 		if err := client.Pet.DeleteOne(p1).Exec(ctx); err != nil {
